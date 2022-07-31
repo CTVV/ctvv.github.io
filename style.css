@@ -39,6 +39,7 @@ body {
     flex-direction: column;
     font-size: 2rem;
     border: 3px solid rgba(30,30,30,0.3);
+    position: absolute;
 }
 
 .game-menu {
@@ -113,6 +114,13 @@ button {
     overflow: auto;
 }
 
+.question-number {
+    font-size: 1.3rem;
+    position: absolute;
+    right: 5%;
+    bottom: 1.5%;
+}
+
 /* End game */
 .end-game {
     display: flex;
@@ -168,6 +176,39 @@ button {
     display: none;
 }
 
+.contact-info {
+    color: var(--font-color);
+    position: fixed;
+    bottom: 0%;
+    right: 2%;
+    height: 100px;
+    width: 100px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    font-size: 1.3rem;
+}
+.icons {
+    height: 50px;
+    width:100px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    font-size: 1.5rem;
+}
+
+.icons i:hover {
+    color:#72a2fc;
+    cursor: pointer;
+}
+
+a {
+    outline: none;
+}
+
+a:visited {
+    color: var(--font-color);
+}
 /* MediaQuery */
 @media screen and (max-width: 640px) {
     .menu {
@@ -176,9 +217,16 @@ button {
         font-size: 1rem;
     }
 
+    .question-number {
+        right: 6%;
+        bottom: 3%;
+        font-size: 0.8rem;
+    }
+
     .options {
         height: 35px;
         margin-top: 5px;
+        font-size: 1rem;
     }
 
     .options:hover {
@@ -192,15 +240,30 @@ button {
     .question {
         height: 70px;
     }
+
     .winner {
         font-size: 2rem;
     }
+
     #tryAgain {
         width: 150px;
         height: 60px;
         font-size: 1rem;
     }
+
     #tryAgain:hover {
         font-size: 1.2rem;
+    }
+
+    .contact-info{
+        font-size: 1rem;
+        height: 80px;
+        width: 80px;
+    }
+
+    .icons {
+        height: 40px;
+        width: 80px;
+        font-size: 1.3rem;
     }
 }

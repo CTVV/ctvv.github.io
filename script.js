@@ -14,6 +14,7 @@ const categoryChoice = document.querySelectorAll('.query-category');
 const question = document.getElementById('question');
 const answers = document.querySelectorAll('.answer');
 const finalScore = document.getElementById('score');
+const numberOfQuestionEl = document.querySelector('.question-number');
 // Try again
 const tryAgainBtn = document.getElementById('tryAgain');
 // Scoreboard
@@ -22,9 +23,6 @@ const scoreElements = document.querySelectorAll('.scores');
 const goToMenuBtn = document.getElementById('goToMenu');
 // go to score page
 const goToScorepageBtn = document.getElementById('checkScoreboard');
-
-
-// Consts
 
 // Variables
 let numberOfQuestions = 0;
@@ -38,11 +36,18 @@ let isDataAvaible = false;
 let gameStarted = false;
 let chosenCategory = '';
 let bestScoreArray = [];
-// Game Logic
 
-// local Storage
-function scoreToLocalStorage() {
-    localStorage.setItem('bestScore', JSON.stringify(bestScoreArray));
+// If someone has played this game before, he will get his bestScores
+function getScoreFromLocalStorage() {
+    if(localStorage.bestScore){
+        bestScoreArray = JSON.parse(localStorage.bestScore);
+    }
+}
+
+// Get number of questions from user (Attached to event listeners)
+function chooseNumberOfQuestions(e) {
+    numberOfQuestions = Number(e.srcElement.value);
+    showCategoryPage();
 }
 
 // Show Category Page
@@ -51,84 +56,25 @@ function showCategoryPage() {
     selectPage.classList.remove('not-visible');
 }
 
-function updateScorePage(){
-    bestScoreArray.push({'number': numberOfQuestions, 'category': chosenCategory, 'points': points});
-    scoreToLocalStorage();
+// Get category from user (Attached to event listeners)
+function chooseCategoryID(e) {
+    categoryId = Number(e.srcElement.value);
+    chosenCategory = e.srcElement.textContent;
+    prepareForGame();
 }
 
-function showEndGame() {
-    gamePage.classList.add('not-visible');
-    endGamePage.classList.remove('not-visible');
-    finalScore.textContent = `${points}/${questionArray.length}`;
-    updateScorePage();
-}
-
-function goToScorePage() {
-    console.log(bestScoreArray);
-    menuPage.classList.add('not-visible');
-    scoreboardPage.classList.remove('not-visible');
-    box.textContent = '';
-    bestScoreArray.forEach((el, i) => {
-        const newScore = document.createElement('div');
-        newScore.classList.add('scores');
-        newScore.textContent = `${bestScoreArray[i].category} - ${bestScoreArray[i].points}/${bestScoreArray[i].number}`;
-        box.appendChild(newScore);
-    });
-}
-
-function gameEvaluating(e) {
-    if (e.target.textContent === correctAnswer) {
-        points++;
-    } 
-    if (count < questionArray.length){
-        populateDOM(count)
-    } else {
-        showEndGame();
-    }
-}
-
-function isPageAvaible(){
-    if (isDataAvaible){
-        loader.classList.add('not-visible');
-        populateDOM(0);
-        gameStarted = true;
-        clearInterval(myInterval);
-    } else {
-        return;
-    }
-}
-
+// Preparing game, by getting questions from API
 function prepareForGame() {
     selectPage.classList.add('not-visible');
     loader.classList.remove('not-visible');
     getQuestions();
-    myInterval = setInterval(isPageAvaible, 1000);
-}
-
-function arrayMaker(index) {
-    question.textContent = questionArray[index].question;
-    actualQuestionArray = questionArray[index].incorrect_answers.slice(0, 3);
-    correctAnswer = questionArray[index].correct_answer;
-    actualQuestionArray.push(questionArray[index].correct_answer);
-}
-
-// Populate DOM
-function populateDOM(index) {
-    if (!gameStarted) {
-        gamePage.classList.remove('not-visible');
-    }
-    arrayMaker(index);
-    shuffle(actualQuestionArray);
-    answers.forEach( (el , i) => {
-        el.textContent = actualQuestionArray[i];
-    });
-    count++;
+    myInterval = setInterval(dataChecker, 1000);
 }
 
 // Fetch data from server
 async function getQuestions() {
     try {
-        let apiUrl = `https://opentdb.com/api.php?amount=${numberOfQuestions}&category=${categoryId}&difficulty=easy&type=multiple`;
+        let apiUrl = `https://opentdb.com/api.php?amount=${numberOfQuestions}&category=${categoryId}&type=multiple`;
         let response = await fetch(apiUrl);
         let data = await response.json();
         questionArray = data.results;
@@ -138,9 +84,90 @@ async function getQuestions() {
     }
 }
 
-function loadMenu() {
-    scoreboardPage.classList.add('not-visible');
-    menuPage.classList.remove('not-visible');
+// Checks if data is avaible to use
+function dataChecker(){
+    if (isDataAvaible){
+        loader.classList.add('not-visible');
+        // Populate first time DOM
+        populateDOM(0);
+        numberOfQuestionEl.classList.remove('not-visible');
+        gameStarted = true;
+        clearInterval(myInterval);
+    } else {
+        return;
+    }
+}
+
+// Populate DOM
+function populateDOM(index) {
+    if (!gameStarted) {
+        gamePage.classList.remove('not-visible');
+    }
+    changeQuestion(index);
+    changeAnswers(index);
+    // Use algorithm to shuffle answers array
+    shuffle(actualQuestionArray);
+    answers.forEach( (el , i) => {
+        el.textContent = actualQuestionArray[i];
+    });
+    count++;
+    updateNumberOfQuestion();
+}
+
+function updateNumberOfQuestion(){
+    numberOfQuestionEl.textContent = `${count}/${questionArray.length}`;
+}
+
+function changeQuestion(index){
+    question.textContent = questionArray[index].question;
+}
+
+function changeAnswers(index) {
+    actualQuestionArray = questionArray[index].incorrect_answers.slice(0, 3);
+    correctAnswer = questionArray[index].correct_answer;
+    actualQuestionArray.push(questionArray[index].correct_answer);
+}
+
+function gameEvaluating(e) {
+    if (e.target.textContent === correctAnswer) {
+        points++;
+    } 
+    if (count < questionArray.length){
+        populateDOM(count);
+    } else {
+        numberOfQuestionEl.classList.add('not-visible');
+        showEndGamePage();
+    }
+}
+
+function showEndGamePage() {
+    gamePage.classList.add('not-visible');
+    endGamePage.classList.remove('not-visible');
+    finalScore.textContent = `${points}/${questionArray.length}`;
+    updateScorePage();
+}
+
+function updateScorePage(){
+    if (bestScoreArray.length > 7){
+        bestScoreArray.push({'number': numberOfQuestions, 'category': chosenCategory, 'points': points});
+        bestScoreArray.sort((a, b) => {
+            return b.points/b.number - a.points/a.number;
+        });
+    } else {
+        if (bestScoreArray[6].points/bestScoreArray[6].number < points/numberOfQuestions) {
+            bestScoreArray.pop();
+            bestScoreArray.push({'number': numberOfQuestions, 'category': chosenCategory, 'points': points});
+            bestScoreArray.sort((a, b) => {
+                return b.points/b.number - a.points/a.number;
+            });
+        }
+    }
+    scoreToLocalStorage();
+}
+
+// local Storage
+function scoreToLocalStorage() {
+    localStorage.setItem('bestScore', JSON.stringify(bestScoreArray));
 }
 
 function playAgain(){
@@ -154,26 +181,27 @@ function playAgain(){
     actualQuestionArray = [];
     isDataAvaible = false;
     gameStarted = false;
-    let chosenCategory = '';
+    chosenCategory = '';
     menuPage.classList.remove('not-visible');
 }
 
-function chooseCategoryID(e) {
-    categoryId = Number(e.srcElement.value);
-    chosenCategory = e.srcElement.textContent;
-    prepareForGame();
+function goToScorePage() {
+    menuPage.classList.add('not-visible');
+    scoreboardPage.classList.remove('not-visible');
+    box.textContent = '';
+    bestScoreArray.forEach((el, i) => {
+        const newScore = document.createElement('div');
+        newScore.classList.add('scores');
+        newScore.textContent = `${bestScoreArray[i].category} - ${bestScoreArray[i].points}/${bestScoreArray[i].number}`;
+        box.appendChild(newScore);
+    });
 }
 
-function chooseNumberOfQuestions(e) {
-    numberOfQuestions = Number(e.srcElement.value);
-    showCategoryPage();
+function loadMenu() {
+    scoreboardPage.classList.add('not-visible');
+    menuPage.classList.remove('not-visible');
 }
 
-function getScoreFromLocalStorage() {
-    if(localStorage.bestScore){
-        bestScoreArray = JSON.parse(localStorage.bestScore);
-    }
-}
 // Adding event listeners
 function questionEventListeners(){
     questionChoice.forEach( (el) => {
