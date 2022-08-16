@@ -3,10 +3,10 @@
 <h2>Description</h2>
 A simple quiz app, that you can redesign for your own purposes. You can choose one of four numbers of questions and one of six categories to play with. This app also use local storage to store your best scores. There are three levels of difficulties included in that app, and that makes each of games unique. Try yourself and link me your best score!
 
-I've made this app with vanilla JavaScript (ES 6), HTML and CSS, becouse i wanted to strength my knowledge in this particular area.
+I've made this app with vanilla JavaScript (ES 6), HTML and CSS, becouse i wanted to strengthen my knowledge in this particular area.
 
-One of challenges that i faced was how to design a game itself, so later while i was refactoring a code i made a class that stores an information about game itself.
-The public database that i used had and issue with html enteties - so i made an html parser that utilizes Web API and returns a proper text content.
+One of challenges that i had faced, was how to design a game itself. The first attempt was to use simple variables but it just look bad and not so functional. Thats why while i was refactoring a code I made a class that stores an information about game itself (gamedata file).
+The public database that i used had and issue with html enteties - so i made an html parser that utilizes Web API (DOM) and returns a proper text content.
 
 If you find this app usefull, please give me a star. I'am open for any advice how could i make this better or create new features.
 
