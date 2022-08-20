@@ -6,11 +6,10 @@
         <title>My Quiz App</title>
         <link rel="icon" type="image/png" href="https://www.google.com/s2/u/0/favicons?domain=css-tricks.com">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-        <link rel="stylesheet" type="text/css" href="style.css">
-        <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
-        <link rel="manifest" href="/site.webmanifest">
+        <link rel="apple-touch-icon" sizes="180x180" href="./src/favicon/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="./src/favicon/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="./src/favicon/favicon-16x16.png">
+        <link rel="manifest" href="./src/favicon/site.webmanifest">
     </head>
     <body>
         <div class="menu">
@@ -31,7 +30,7 @@
                 <button class="options query-category" id="categorySports">Sports</button>
             </div>
             <div class="loading not-visible">
-                    <img src="images/Spinner-1s-200px.svg" alt="Loading Animation">
+                    <img src="./src/images/Spinner-1s-200px.svg" alt="Loading Animation">
             </div>
             <div class="game not-visible">
                 <div class="question" id="question"></div>
@@ -58,7 +57,7 @@
         </div>
         <div class="contact-info">
             <div class="icons">
-                <a href="https://github.com/CTVV/ctvv.github.io" target="_blank"><i class="fa-brands fa-github"></i></a>
+                <a href="https://github.com/CTVV/quizapp" target="_blank"><i class="fa-brands fa-github"></i></a>
                 <a href="https://www.linkedin.com/in/marcin-k%C4%99dzierski-966456235/" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a>
             </div>
             <div class="author">
@@ -66,9 +65,6 @@
             </div>
         </div>
         <!-- Script  -->
-        <script src="gamedata.js"></script>
-        <script src="script.js"></script>
-        <script src="shuffle.js"></script>
-        <script src="htmlparser.js"></script>
+        <script src="./dist/bundle.js"></script>
     </body>
 </html>
